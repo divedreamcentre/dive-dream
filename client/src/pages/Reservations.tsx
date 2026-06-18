@@ -96,7 +96,8 @@ export default function Reservations() {
       toast.success('Reservation Request Received!', {
         description: `A secure confirmation email has been dispatched to ${email}.`,
       });
-    } catch {
+    } catch (err) {
+      console.error('Firebase submission error:', err);
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
