@@ -4,6 +4,8 @@ import { DIVE_PACKAGES, COURSES, SERVICES } from '@/const';
 import { Shield, CheckCircle2, AlertTriangle, Calendar, Users, CheckCircle, Mail, HelpCircle } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { toast } from 'sonner';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 type ServiceCategory = '' | 'packages' | 'courses' | 'services';
 
@@ -59,7 +61,9 @@ export default function Reservations() {
     return null;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!fullName || !email || !preferredDate) {
@@ -67,13 +71,36 @@ export default function Reservations() {
       return;
     }
 
-    const ref = 'AD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-    setBookingRef(ref);
-    setIsExpanded(true);
+    setIsSubmitting(true);
 
-    toast.success('Reservation Request Received!', {
-      description: `A secure confirmation email has been dispatched to ${email}.`,
-    });
+    try {
+      const ref = 'DD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+
+      await addDoc(collection(db, 'reservations'), {
+        bookingRef: ref,
+        fullName,
+        email,
+        phone,
+        preferredDate,
+        peopleCount,
+        serviceCategory: serviceCategory || null,
+        selectedOption: selectedOption || null,
+        selectionLabel: getSelectionLabel() || null,
+        specialRequests: specialRequests || null,
+        createdAt: serverTimestamp(),
+      });
+
+      setBookingRef(ref);
+      setIsExpanded(true);
+
+      toast.success('Reservation Request Received!', {
+        description: `A secure confirmation email has been dispatched to ${email}.`,
+      });
+    } catch {
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleReset = () => {
@@ -326,8 +353,8 @@ export default function Reservations() {
                     </div>
 
                     {/* Submit Button */}
-                    <button type="submit" className="btn-premium-primary w-full py-3.5 text-sm font-semibold uppercase tracking-widest">
-                      Request a Booking
+                    <button type="submit" disabled={isSubmitting} className="btn-premium-primary w-full py-3.5 text-sm font-semibold uppercase tracking-widest">
+                      {isSubmitting ? 'Submitting...' : 'Request a Booking'}
                     </button>
                   </form>
                 </div>
