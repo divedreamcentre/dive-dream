@@ -1,13 +1,91 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'wouter';
 import Layout from '@/components/Layout';
 import { IMAGES, DIVE_SITES, DIVE_PACKAGES, PROMOTIONS, SERVICES } from '@/const';
-import { ArrowRight, Anchor, Shield, Star, Award, Compass, MapPin, Waves, Flame, Clock, BookOpen } from 'lucide-react';
+import { ArrowRight, Anchor, Shield, Star, Award, Compass, MapPin, Waves, Flame, Clock, BookOpen, Tag, ChevronLeft, ChevronRight, Globe } from 'lucide-react';
 import { MapView } from '@/components/Map';
 import { toast } from 'sonner';
+import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
+
+const heroSlides = [
+  { image: IMAGES.heroUnderwater, title: 'Explore Crystal Waters', subtitle: 'Dive into 40+ pristine sites across Mauritius' },
+  { image: IMAGES.diveSiteWreck, title: 'Historic Wreck Diving', subtitle: 'Discover fascinating underwater relics and marine ecosystems' },
+  { image: IMAGES.coralReef, title: 'Vibrant Coral Gardens', subtitle: 'Swim through some of the Indian Ocean\'s richest reefs' },
+  { image: IMAGES.scubaTraining, title: 'Professional Training', subtitle: 'SDI & TDI certified courses from beginner to instructor' },
+  { image: IMAGES.diveBoat, title: 'Luxury Dive Vessel', subtitle: 'Set sail on our custom-built catamaran for every expedition' },
+];
 
 export default function Home() {
   const featuredSites = DIVE_SITES.slice(0, 3);
+
+  const autoplayPlugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: false }));
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true, align: 'center', slidesToScroll: 1 },
+    [autoplayPlugin.current],
+  );
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [slideTweens, setSlideTweens] = useState<number[]>([]);
+
+  const marineAutoplay = useRef(Autoplay({ delay: 4000, stopOnInteraction: false }));
+  const [marineRef, marineApi] = useEmblaCarousel(
+    { loop: true, align: 'start', slidesToScroll: 1 },
+    [marineAutoplay.current],
+  );
+  const [marineActiveSlide, setMarineActiveSlide] = useState(0);
+
+  const scrollTo = useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi]);
+
+  const updateTweens = useCallback(() => {
+    if (!emblaApi) return;
+    const engine = emblaApi.internalEngine();
+    const scrollProgress = emblaApi.scrollProgress();
+    const styles = emblaApi.scrollSnapList().map((snap, idx) => {
+      let diff = snap - scrollProgress;
+      engine.slideLooper.loopPoints.forEach((lp) => {
+        const target = lp.target();
+        if (idx === lp.index && target !== 0) {
+          const sign = Math.sign(target);
+          if (sign === -1) diff = snap - (1 + scrollProgress);
+          if (sign === 1) diff = snap + (1 - scrollProgress);
+        }
+      });
+      return Math.min(Math.abs(diff * 3.5), 1);
+    });
+    setSlideTweens(styles);
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setActiveSlide(emblaApi.selectedScrollSnap());
+    emblaApi.on('select', onSelect);
+    emblaApi.on('scroll', updateTweens);
+    emblaApi.on('reInit', updateTweens);
+    onSelect();
+    updateTweens();
+    return () => {
+      emblaApi.off('select', onSelect);
+      emblaApi.off('scroll', updateTweens);
+      emblaApi.off('reInit', updateTweens);
+    };
+  }, [emblaApi, updateTweens]);
+
+  const scrollToMarine = useCallback((index: number) => marineApi?.scrollTo(index), [marineApi]);
+
+  useEffect(() => {
+    if (!marineApi) return;
+    const onSelect = () => setMarineActiveSlide(marineApi.selectedScrollSnap());
+    marineApi.on('select', onSelect);
+    onSelect();
+    return () => { marineApi.off('select', onSelect); };
+  }, [marineApi]);
+
+  const marineLife = [
+    { name: 'Whale Shark', desc: 'The gentle giants of the deep, visiting outer reefs seasonally. These magnificent creatures can grow up to 12 metres and are a highlight of any dive.', img: IMAGES.heroUnderwater },
+    { name: 'Green Sea Turtle', desc: 'Frequently seen grazing in shallow coral gardens. These graceful reptiles are a beloved encounter for divers of all experience levels.', img: IMAGES.seaTurtle },
+    { name: 'Manta Ray', desc: 'Gracefully gliding along deep currents and cleaning stations. With wingspans up to 7 metres, mantas are among the ocean\'s most elegant inhabitants.', img: IMAGES.mantaRay },
+    { name: 'Giant Moray Eel', desc: 'Peeking out from rocky crevices and historic wrecks. Despite their fearsome appearance, these fascinating creatures are generally docile.', img: IMAGES.diveSiteWreck },
+  ];
 
   const coreCourses = [
     { id: 'open-water', name: 'Open Water Diver Course', description: 'The foundation of recreational diving. Learn essential skills to dive safely to 18 metres independently with a buddy.' },
@@ -137,15 +215,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. PROMOTIONS BANNER (Countdown & Seasonal) */}
-      <section className="py-12 bg-primary/5 border-y border-primary/20 relative">
+      {/* 2. EARLY BOOKING DISCOUNT BANNER */}
+      <section className="py-12 bg-gold/5 border-y border-gold/20 relative">
         <div className="container flex flex-col lg:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4 text-left">
-            <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0">
-              <Flame className="w-6 h-6 text-primary animate-pulse" />
+            <div className="w-12 h-12 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center shrink-0">
+              <Flame className="w-6 h-6 text-gold animate-pulse" />
             </div>
             <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-1.5">
+              <span className="text-xs font-bold uppercase tracking-widest text-gold flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5" /> Limited Time Campaign
               </span>
               <h3 className="text-lg md:text-xl font-bold text-white mt-1">{mainPromotion.title} — {mainPromotion.discount}</h3>
@@ -153,21 +231,104 @@ export default function Home() {
             </div>
           </div>
           <div className="flex items-center gap-4 shrink-0 w-full lg:w-auto">
-            <div className="bg-background/80 border border-border px-4 py-2 rounded-lg text-center shrink-0">
-              <span className="block font-serif text-lg font-bold text-primary">05</span>
+            <div className="bg-background/80 border border-gold/20 px-4 py-2 rounded-lg text-center shrink-0">
+              <span className="block font-serif text-lg font-bold text-gold">05</span>
               <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Days</span>
             </div>
-            <div className="bg-background/80 border border-border px-4 py-2 rounded-lg text-center shrink-0">
-              <span className="block font-serif text-lg font-bold text-primary">14</span>
+            <div className="bg-background/80 border border-gold/20 px-4 py-2 rounded-lg text-center shrink-0">
+              <span className="block font-serif text-lg font-bold text-gold">14</span>
               <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Hrs</span>
             </div>
-            <div className="bg-background/80 border border-border px-4 py-2 rounded-lg text-center shrink-0">
-              <span className="block font-serif text-lg font-bold text-primary">32</span>
+            <div className="bg-background/80 border border-gold/20 px-4 py-2 rounded-lg text-center shrink-0">
+              <span className="block font-serif text-lg font-bold text-gold">32</span>
               <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Mins</span>
             </div>
-            <Link href="/promotions" className="btn-premium-primary px-6 py-3 text-sm shrink-0 w-full sm:w-auto text-center">
+            <Link href="/promotions" className="btn-premium-gold px-6 py-3 text-sm shrink-0 w-full sm:w-auto text-center">
               Claim Offer
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 1b. FEATURED IMAGE CAROUSEL */}
+      <section className="py-16 relative overflow-hidden">
+        <div className="container max-w-6xl relative">
+          {/* Carousel viewport */}
+          <div
+            ref={emblaRef}
+            className="overflow-hidden"
+            onMouseEnter={() => autoplayPlugin.current.stop()}
+            onMouseLeave={() => autoplayPlugin.current.play()}
+          >
+            <div className="flex -ml-4">
+              {heroSlides.map((slide, idx) => {
+                const tweenVal = slideTweens[idx] ?? 1;
+                const scale = 1 - tweenVal * 0.15;
+                const opacity = 1 - tweenVal * 0.5;
+                return (
+                  <div
+                    key={idx}
+                    className="min-w-0 shrink-0 grow-0 pl-4"
+                    style={{ flex: '0 0 70%' }}
+                  >
+                    <div
+                      className="rounded-xl overflow-hidden border border-border/40 shadow-2xl shadow-black/30 transition-shadow duration-500"
+                      style={{
+                        transform: `scale(${scale})`,
+                        opacity,
+                        transition: 'transform 0.35s ease-out, opacity 0.35s ease-out',
+                        boxShadow: tweenVal < 0.15
+                          ? '0 25px 60px -12px rgba(0,0,0,0.5), 0 0 40px -8px oklch(0.65 0.18 200 / 0.15)'
+                          : undefined,
+                      }}
+                    >
+                      <div className="aspect-[16/9] relative">
+                        <img
+                          src={slide.image}
+                          alt={slide.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+                        <div
+                          className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 transition-opacity duration-300"
+                          style={{ opacity: tweenVal < 0.3 ? 1 : 0 }}
+                        >
+                          <h3 className="text-xl sm:text-3xl font-serif font-bold text-white mb-2">{slide.title}</h3>
+                          <p className="text-sm sm:text-base text-muted-foreground max-w-lg">{slide.subtitle}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Navigation Arrows */}
+          <button
+            onClick={() => emblaApi?.scrollPrev()}
+            className="absolute left-0 sm:-left-2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-background/70 backdrop-blur-md border border-white/15 flex items-center justify-center text-white hover:bg-background/90 hover:border-primary/40 transition-all duration-200 z-10 shadow-lg"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => emblaApi?.scrollNext()}
+            className="absolute right-0 sm:-right-2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-background/70 backdrop-blur-md border border-white/15 flex items-center justify-center text-white hover:bg-background/90 hover:border-primary/40 transition-all duration-200 z-10 shadow-lg"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+
+          {/* Pagination Dots */}
+          <div className="flex justify-center gap-2 mt-6">
+            {heroSlides.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => scrollTo(idx)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  idx === activeSlide ? 'w-8 bg-gold' : 'w-2 bg-white/30 hover:bg-white/50'
+                }`}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -253,7 +414,7 @@ export default function Home() {
                 }`}
               >
                 {pkg.isBestValue && (
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-primary/40 shadow-md">
+                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gold text-gold-foreground text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-gold/40 shadow-md shadow-gold/20">
                     Best Value
                   </span>
                 )}
@@ -297,6 +458,13 @@ export default function Home() {
                 </Link>
               </div>
             ))}
+          </div>
+
+          <div className="mt-12">
+            <Link href="/packages" className="btn-premium-secondary text-sm inline-flex items-center gap-2">
+              View All Packages
+              <ArrowRight className="w-4 h-4 text-primary" />
+            </Link>
           </div>
         </div>
       </section>
@@ -354,8 +522,95 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 6. PROMOTIONS & SPECIAL OFFERS */}
+      <section className="py-24 bg-secondary/20 relative">
+        <div className="container text-center max-w-5xl">
+          <span className="text-xs font-bold uppercase tracking-widest text-primary">Exclusive Offers</span>
+          <h2 className="text-3xl md:text-5xl font-serif mt-2 mb-4 text-white">Promotions & Special Deals</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-16">
+            Take advantage of our seasonal campaigns and loyalty rewards. Book smarter and save on your next diving adventure.
+          </p>
 
-      {/* 7. MARINE LIFE GALLERY */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+            {PROMOTIONS.map((promo) => (
+              <div key={promo.id} className="glass-panel p-8 flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                      <Tag className="w-6 h-6 text-primary" />
+                    </div>
+                    <span className="text-2xl font-serif font-bold text-gold">{promo.discount}</span>
+                  </div>
+                  <h3 className="text-lg font-serif font-bold text-white mb-3">{promo.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-6">{promo.description}</p>
+                </div>
+                <div className="border-t border-white/10 pt-4 flex items-center justify-between">
+                  <span className="font-mono text-xs font-bold text-white tracking-wider bg-white/5 px-3 py-1.5 rounded border border-white/10">{promo.code}</span>
+                  <Link href={`/reservations?promo=${promo.code}`} className="text-xs text-primary font-bold uppercase tracking-wider hover:underline inline-flex items-center gap-1">
+                    Apply <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12">
+            <Link href="/promotions" className="btn-premium-secondary text-sm inline-flex items-center gap-2">
+              View All Promotions
+              <ArrowRight className="w-4 h-4 text-primary" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 6b. PREMIUM SERVICES */}
+      <section className="py-24 relative">
+        <div className="container text-center max-w-5xl">
+          <span className="text-xs font-bold uppercase tracking-widest text-primary">VIP Logistics</span>
+          <h2 className="text-3xl md:text-5xl font-serif mt-2 mb-4 text-white">Premium Services</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-16">
+            Beyond elite diving. Airport transfers, private charters, snorkeling safaris, underwater photography, and luxury onboard catering.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+            {SERVICES.slice(0, 3).map((srv) => (
+              <div key={srv.id} className="glass-panel overflow-hidden group flex flex-col h-full">
+                <div className="h-48 overflow-hidden relative">
+                  <img
+                    src={srv.image}
+                    alt={srv.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent z-10" />
+                </div>
+                <div className="p-6 flex flex-col flex-grow">
+                  <h3 className="text-lg font-serif font-bold text-white mb-2 group-hover:text-primary transition-colors">
+                    {srv.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4 flex-grow">
+                    {srv.description.slice(0, 120)}...
+                  </p>
+                  <div className="border-t border-white/10 pt-4 flex items-center justify-between">
+                    <span className="text-sm font-bold text-white">{srv.price}</span>
+                    <Link href={`/reservations?service=${srv.id}`} className="text-xs text-primary font-bold uppercase tracking-wider hover:underline inline-flex items-center gap-1">
+                      Book <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12">
+            <Link href="/services" className="btn-premium-secondary text-sm inline-flex items-center gap-2">
+              View All Services
+              <ArrowRight className="w-4 h-4 text-primary" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. MARINE LIFE ENCOUNTERS SLIDESHOW */}
       <section className="py-24 relative">
         <div className="container text-center max-w-5xl">
           <span className="text-xs font-bold uppercase tracking-widest text-primary">Biodiversity</span>
@@ -364,29 +619,66 @@ export default function Home() {
             Our dive sites are teeming with majestic pelagics and fascinating macro species. Here are some of the regular residents you will meet.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { name: 'Whale Shark', desc: 'The gentle giants of the deep, visiting outer reefs.', img: IMAGES.heroUnderwater },
-              { name: 'Green Sea Turtle', desc: 'Frequently seen grazing in shallow coral gardens.', img: IMAGES.seaTurtle },
-              { name: 'Manta Ray', desc: 'Gracefully gliding along deep currents and cleaning stations.', img: IMAGES.mantaRay },
-              { name: 'Giant Moray Eel', desc: 'Peeking out from rocky crevices and historic wrecks.', img: IMAGES.diveSiteWreck }
-            ].map((creature, idx) => (
-              <div key={idx} className="glass-panel overflow-hidden group flex flex-col h-full text-left">
-                <div className="h-48 overflow-hidden relative">
-                  <img 
-                    src={creature.img} 
-                    alt={creature.name} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                </div>
-                <div className="p-5 flex-grow flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-lg font-serif font-bold text-white mb-1">{creature.name}</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{creature.desc}</p>
+          <div className="relative">
+            <div
+              ref={marineRef}
+              className="overflow-hidden"
+              onMouseEnter={() => marineAutoplay.current.stop()}
+              onMouseLeave={() => marineAutoplay.current.play()}
+            >
+              <div className="flex -ml-6">
+                {marineLife.map((creature, idx) => (
+                  <div
+                    key={idx}
+                    className="min-w-0 shrink-0 grow-0 pl-6 basis-full sm:basis-1/2 lg:basis-1/3"
+                  >
+                    <div className="glass-panel overflow-hidden group flex flex-col h-full text-left">
+                      <div className="h-56 overflow-hidden relative">
+                        <img
+                          src={creature.img}
+                          alt={creature.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+                      </div>
+                      <div className="p-6 flex-grow flex flex-col justify-between">
+                        <div>
+                          <h3 className="text-lg font-serif font-bold text-white mb-2">{creature.name}</h3>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{creature.desc}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={() => marineApi?.scrollPrev()}
+              className="absolute left-0 sm:-left-5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-background/70 backdrop-blur-md border border-white/15 flex items-center justify-center text-white hover:bg-background/90 hover:border-primary/40 transition-all duration-200 z-10 shadow-lg"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => marineApi?.scrollNext()}
+              className="absolute right-0 sm:-right-5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-background/70 backdrop-blur-md border border-white/15 flex items-center justify-center text-white hover:bg-background/90 hover:border-primary/40 transition-all duration-200 z-10 shadow-lg"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+
+            {/* Pagination Dots */}
+            <div className="flex justify-center gap-2 mt-8">
+              {marineLife.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => scrollToMarine(idx)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    idx === marineActiveSlide ? 'w-8 bg-primary' : 'w-2 bg-white/30 hover:bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -406,7 +698,7 @@ export default function Home() {
                 <div>
                   <div className="flex gap-1 mb-6">
                     {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-primary text-primary" />
+                      <Star key={i} className="w-4 h-4 fill-gold text-gold" />
                     ))}
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed italic mb-8">
@@ -428,7 +720,35 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 9. QUICK CONTACT & INTERACTIVE MAP */}
+      {/* 9. MULTILINGUAL AVAILABILITY */}
+      <section className="py-20 relative border-t border-border/40">
+        <div className="container max-w-4xl text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold/10 border border-gold/30 mb-6">
+            <Globe className="w-4 h-4 text-gold" />
+            <span className="text-xs font-semibold uppercase tracking-widest text-gold">International Welcome</span>
+          </div>
+          <h2 className="text-3xl md:text-5xl font-serif mt-2 mb-4 text-white">We Speak Your Language</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-12">
+            We provide all courses and services in multiple languages to support international learners and clients.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10">
+            {[
+              { lang: 'English', flag: '🇬🇧', label: 'EN' },
+              { lang: 'Français', flag: '🇫🇷', label: 'FR' },
+              { lang: 'Deutsch', flag: '🇩🇪', label: 'DE' },
+            ].map((item) => (
+              <div key={item.label} className="glass-panel px-8 py-6 flex flex-col items-center gap-3 min-w-[140px]">
+                <span className="text-4xl">{item.flag}</span>
+                <span className="text-base font-serif font-bold text-white">{item.lang}</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-gold bg-gold/10 border border-gold/20 px-2.5 py-0.5 rounded-full">{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 10. QUICK CONTACT & INTERACTIVE MAP */}
       <section className="py-24 relative border-t border-border/40">
         <div className="container max-w-5xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">

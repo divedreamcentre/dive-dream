@@ -11,6 +11,17 @@ export default function Layout({ children }: LayoutProps) {
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownTimeout = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const openDropdown = () => {
+    if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current);
+    setIsDropdownOpen(true);
+  };
+
+  const closeDropdown = () => {
+    dropdownTimeout.current = setTimeout(() => setIsDropdownOpen(false), 250);
+  };
   // Handle scroll detection for sticky nav styling
   useEffect(() => {
     const handleScroll = () => {
@@ -28,12 +39,15 @@ export default function Layout({ children }: LayoutProps) {
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/dive-sites', label: 'Dive Sites' },
+    { href: '/packages', label: 'Packages' },
     { href: '/courses', label: 'Courses' },
+    { href: '/services', label: 'Services' },
     { href: '/about', label: 'About' },
     { href: '/contact', label: 'Contact' },
   ];
 
   const secondaryLinks = [
+    { href: '/promotions', label: 'Promotions' },
     { href: '/crew', label: 'Our Crew' },
     { href: '/equipment', label: 'Equipment' },
     { href: '/dive-center', label: 'Dive Center' },
@@ -60,7 +74,7 @@ export default function Layout({ children }: LayoutProps) {
             <span className="text-primary-foreground bg-primary/20 px-2 py-0.5 rounded-full font-medium text-[10px] tracking-wider uppercase border border-primary/30">
               SDI / TDI 5-Star Dive Center
             </span>
-            <span className="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full font-medium text-[10px] tracking-wider uppercase border border-emerald-500/20">
+            <span className="text-gold bg-gold/10 px-2 py-0.5 rounded-full font-medium text-[10px] tracking-wider uppercase border border-gold/20">
               Nitrox Membrane Station
             </span>
           </div>
@@ -97,12 +111,16 @@ export default function Layout({ children }: LayoutProps) {
             })}
 
             {/* Secondary links dropdown */}
-            <div className="relative group">
+            <div className="relative" onMouseEnter={openDropdown} onMouseLeave={closeDropdown}>
               <button className="hover-link text-sm font-medium flex items-center gap-1">
                 More
-                <ChevronRight className="w-3.5 h-3.5 rotate-90" />
+                <ChevronRight className={`w-3.5 h-3.5 transition-transform duration-200 ${isDropdownOpen ? 'rotate-90' : 'rotate-90'}`} />
               </button>
-              <div className="absolute right-0 top-full mt-2 w-48 bg-background/95 backdrop-blur-md border border-border/80 rounded-lg shadow-xl py-2 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
+              {/* Invisible bridge to prevent gap-caused close */}
+              <div className="absolute right-0 top-full h-3 w-48" />
+              <div className={`absolute right-0 top-full mt-2 w-48 bg-background/95 backdrop-blur-md border border-border/80 rounded-lg shadow-xl py-2 transition-all duration-200 z-50 ${
+                isDropdownOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-2 pointer-events-none'
+              }`}>
                 {secondaryLinks.map((link) => (
                   <Link key={link.href} href={link.href} className="block px-4 py-2 text-sm text-muted-foreground hover:text-white hover:bg-white/5 transition-colors">
                     {link.label}
@@ -114,7 +132,7 @@ export default function Layout({ children }: LayoutProps) {
 
           {/* CTAs */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Link href="/reservations" className="btn-premium-primary !px-5 !py-2 text-sm">
+            <Link href="/reservations" className="btn-premium-gold !px-5 !py-2 text-sm">
               Book Now
             </Link>
           </div>
@@ -172,7 +190,7 @@ export default function Layout({ children }: LayoutProps) {
             </div>
 
             <div className="border-t border-border/40 pt-6 flex flex-col space-y-4">
-              <Link href="/reservations" className="btn-premium-primary w-full text-center py-3">
+              <Link href="/reservations" className="btn-premium-gold w-full text-center py-3">
                 Book Now
               </Link>
               <div className="flex flex-col items-center space-y-2 text-sm text-muted-foreground">
