@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import { IMAGES } from '@/const';
 import { MapPin, CheckCircle2, Waves, Award, Compass, Shield } from 'lucide-react';
-import { MapView } from '@/components/Map';
+
 
 export default function DiveCenter() {
   const facilityAreas = [
@@ -98,19 +98,14 @@ export default function DiveCenter() {
 
             {/* Map */}
             <div className="glass-panel overflow-hidden min-h-[350px] relative bg-slate-900">
-              <MapView 
-                onMapReady={(map: google.maps.Map) => {
-                  const center = { lat: -8.6500, lng: 115.2167 }; // Bali coordinates
-                  map.setCenter(center);
-                  map.setZoom(14);
-                  
-                  new google.maps.Marker({
-                    position: center,
-                    map: map,
-                    title: "AquaDepth Dive Center",
-                    animation: google.maps.Animation.DROP,
-                  });
-                }}
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3748.34925453057!2d57.54324857616065!3d-20.035808741613913!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x217dacaed25f4d75%3A0x1814f7c7bab412c1!2sDive%20Dream%20Divers!5e0!3m2!1sen!2smu!4v1781795341840!5m2!1sen!2smu"
+                className="absolute inset-0 w-full h-full"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Dive Dream Divers Location"
               />
             </div>
           </div>

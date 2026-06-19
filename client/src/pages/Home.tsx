@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'wouter';
 import Layout from '@/components/Layout';
-import { IMAGES, DIVE_SITES, DIVE_PACKAGES, PROMOTIONS, SERVICES } from '@/const';
+import { IMAGES, GALLERY_IMAGES, DIVE_SITES, DIVE_PACKAGES, PROMOTIONS, SERVICES } from '@/const';
 import { ArrowRight, Anchor, Shield, Star, Award, Compass, MapPin, Waves, Flame, Clock, BookOpen, Tag, ChevronLeft, ChevronRight, Globe } from 'lucide-react';
-import { MapView } from '@/components/Map';
-import { toast } from 'sonner';
+
+
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 
@@ -80,6 +80,50 @@ export default function Home() {
     return () => { marineApi.off('select', onSelect); };
   }, [marineApi]);
 
+  const galleryAutoplay = useRef(Autoplay({ delay: 3500, stopOnInteraction: false }));
+  const [galleryRef, galleryApi] = useEmblaCarousel(
+    { loop: true, align: 'center', slidesToScroll: 1 },
+    [galleryAutoplay.current],
+  );
+  const [galleryActiveSlide, setGalleryActiveSlide] = useState(0);
+  const [galleryTweens, setGalleryTweens] = useState<number[]>([]);
+
+  const scrollToGallery = useCallback((index: number) => galleryApi?.scrollTo(index), [galleryApi]);
+
+  const updateGalleryTweens = useCallback(() => {
+    if (!galleryApi) return;
+    const engine = galleryApi.internalEngine();
+    const scrollProgress = galleryApi.scrollProgress();
+    const styles = galleryApi.scrollSnapList().map((snap, idx) => {
+      let diff = snap - scrollProgress;
+      engine.slideLooper.loopPoints.forEach((lp) => {
+        const target = lp.target();
+        if (idx === lp.index && target !== 0) {
+          const sign = Math.sign(target);
+          if (sign === -1) diff = snap - (1 + scrollProgress);
+          if (sign === 1) diff = snap + (1 - scrollProgress);
+        }
+      });
+      return Math.min(Math.abs(diff * 3.5), 1);
+    });
+    setGalleryTweens(styles);
+  }, [galleryApi]);
+
+  useEffect(() => {
+    if (!galleryApi) return;
+    const onSelect = () => setGalleryActiveSlide(galleryApi.selectedScrollSnap());
+    galleryApi.on('select', onSelect);
+    galleryApi.on('scroll', updateGalleryTweens);
+    galleryApi.on('reInit', updateGalleryTweens);
+    onSelect();
+    updateGalleryTweens();
+    return () => {
+      galleryApi.off('select', onSelect);
+      galleryApi.off('scroll', updateGalleryTweens);
+      galleryApi.off('reInit', updateGalleryTweens);
+    };
+  }, [galleryApi, updateGalleryTweens]);
+
   const marineLife = [
     { name: 'Whale Shark', desc: 'The gentle giants of the deep, visiting outer reefs seasonally. These magnificent creatures can grow up to 12 metres and are a highlight of any dive.', img: IMAGES.heroUnderwater },
     { name: 'Green Sea Turtle', desc: 'Frequently seen grazing in shallow coral gardens. These graceful reptiles are a beloved encounter for divers of all experience levels.', img: IMAGES.seaTurtle },
@@ -121,13 +165,6 @@ export default function Home() {
     }
   ];
 
-  const handleQuickContact = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success('Message sent successfully! Our dive operations team will reply within 2 hours.', {
-      description: 'A confirmation has been sent to your email.'
-    });
-    (e.target as HTMLFormElement).reset();
-  };
 
   return (
     <Layout>
@@ -193,8 +230,8 @@ export default function Home() {
             <div className="flex items-center gap-3">
               <Anchor className="w-8 h-8 text-primary shrink-0" />
               <div>
-                <span className="block text-white font-semibold text-sm">Luxury Catamaran</span>
-                <span className="block text-xs text-muted-foreground">Custom Dive Vessel</span>
+                <span className="block text-white font-semibold text-sm">Safety Standards</span>
+                <span className="block text-xs text-muted-foreground">PADI, CMAS, EU PPE</span>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -720,6 +757,86 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 8b. PHOTO GALLERY */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="container text-center max-w-6xl">
+          <span className="text-xs font-bold uppercase tracking-widest text-primary">Our World</span>
+          <h2 className="text-3xl md:text-5xl font-serif mt-2 mb-4 text-white">Gallery</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-16">
+            A glimpse into the breathtaking underwater landscapes and marine encounters that await you in Mauritius.
+          </p>
+
+          <div className="relative">
+            <div
+              ref={galleryRef}
+              className="overflow-hidden"
+              onMouseEnter={() => galleryAutoplay.current.stop()}
+              onMouseLeave={() => galleryAutoplay.current.play()}
+            >
+              <div className="flex -ml-4">
+                {GALLERY_IMAGES.map((src, idx) => {
+                  const tweenVal = galleryTweens[idx] ?? 1;
+                  const scale = 1 - tweenVal * 0.15;
+                  const opacity = 1 - tweenVal * 0.5;
+                  return (
+                    <div
+                      key={idx}
+                      className="min-w-0 shrink-0 grow-0 pl-4"
+                      style={{ flex: '0 0 70%' }}
+                    >
+                      <div
+                        className="rounded-xl overflow-hidden border border-border/40 shadow-2xl shadow-black/30"
+                        style={{
+                          transform: `scale(${scale})`,
+                          opacity,
+                          transition: 'transform 0.35s ease-out, opacity 0.35s ease-out',
+                          boxShadow: tweenVal < 0.15
+                            ? '0 25px 60px -12px rgba(0,0,0,0.5), 0 0 40px -8px oklch(0.65 0.18 200 / 0.15)'
+                            : undefined,
+                        }}
+                      >
+                        <div className="aspect-[16/9] relative">
+                          <img
+                            src={src}
+                            alt={`Gallery photo ${idx + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <button
+              onClick={() => galleryApi?.scrollPrev()}
+              className="absolute left-0 sm:-left-2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-background/70 backdrop-blur-md border border-white/15 flex items-center justify-center text-white hover:bg-background/90 hover:border-primary/40 transition-all duration-200 z-10 shadow-lg"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => galleryApi?.scrollNext()}
+              className="absolute right-0 sm:-right-2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-background/70 backdrop-blur-md border border-white/15 flex items-center justify-center text-white hover:bg-background/90 hover:border-primary/40 transition-all duration-200 z-10 shadow-lg"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+
+            <div className="flex justify-center gap-2 mt-6">
+              {GALLERY_IMAGES.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => scrollToGallery(idx)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    idx === galleryActiveSlide ? 'w-8 bg-gold' : 'w-2 bg-white/30 hover:bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 9. MULTILINGUAL AVAILABILITY */}
       <section className="py-20 relative border-t border-border/40">
         <div className="container max-w-4xl text-center">
@@ -752,57 +869,21 @@ export default function Home() {
       <section className="py-24 relative border-t border-border/40">
         <div className="container max-w-5xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
-            {/* Contact Form */}
-            <div className="glass-panel p-8 md:p-10 text-left flex flex-col justify-between h-full">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-primary">Have Questions?</span>
-                <h2 className="text-2xl md:text-4xl font-serif mt-2 mb-4 text-white">Get in Touch</h2>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-8">
-                  Our professional dive operations team is here to help you plan your next underwater expedition. Drop us a message and we will respond shortly.
-                </p>
+            {/* Get in Touch */}
+            <div className="glass-panel p-8 md:p-10 text-left flex flex-col justify-center h-full">
+              <span className="text-xs font-bold uppercase tracking-widest text-primary">Have Questions?</span>
+              <h2 className="text-2xl md:text-4xl font-serif mt-2 mb-4 text-white">Get in Touch</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-8">
+                Our professional dive operations team is here to help you plan your next underwater expedition.
+              </p>
 
-                <form onSubmit={handleQuickContact} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col space-y-1.5">
-                      <label className="text-xs text-muted-foreground font-semibold">Full Name</label>
-                      <input 
-                        type="text" 
-                        required 
-                        placeholder="John Doe"
-                        className="bg-white/5 border border-border rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary transition-colors"
-                      />
-                    </div>
-                    <div className="flex flex-col space-y-1.5">
-                      <label className="text-xs text-muted-foreground font-semibold">Email Address</label>
-                      <input 
-                        type="email" 
-                        required 
-                        placeholder="john@example.com"
-                        className="bg-white/5 border border-border rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary transition-colors"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-col space-y-1.5">
-                    <label className="text-xs text-muted-foreground font-semibold">Phone Number</label>
-                    <input 
-                      type="tel" 
-                      placeholder="+1 (555) 000-0000"
-                      className="bg-white/5 border border-border rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary transition-colors"
-                    />
-                  </div>
-                  <div className="flex flex-col space-y-1.5">
-                    <label className="text-xs text-muted-foreground font-semibold">Your Message</label>
-                    <textarea 
-                      rows={4} 
-                      required 
-                      placeholder="Tell us about your diving experience and what you are looking for..."
-                      className="bg-white/5 border border-border rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary transition-colors resize-none"
-                    />
-                  </div>
-                  <button type="submit" className="btn-premium-primary w-full py-3 text-sm font-semibold uppercase tracking-widest">
-                    Send Message
-                  </button>
-                </form>
+              <div className="flex flex-col gap-4">
+                <Link href="/contact" className="btn-premium-primary w-full py-3 text-sm font-semibold uppercase tracking-widest text-center">
+                  Send a Message
+                </Link>
+                <Link href="/reservations" className="btn-premium-gold w-full py-3 text-sm font-semibold uppercase tracking-widest text-center">
+                  Book Now
+                </Link>
               </div>
             </div>
 
@@ -816,21 +897,14 @@ export default function Home() {
                 <p className="text-xs text-muted-foreground mt-1">100 Marine Drive, Siren Bay, MB 1204</p>
               </div>
               <div className="flex-grow relative bg-slate-900">
-                {/* Google Maps Integration via Manus Proxy */}
-                <MapView 
-                  onMapReady={(map: google.maps.Map) => {
-                    const center = { lat: -8.6500, lng: 115.2167 }; // Bali example coordinates
-                    map.setCenter(center);
-                    map.setZoom(14);
-                    
-                    // Add custom marker
-                    new google.maps.Marker({
-                      position: center,
-                      map: map,
-                      title: "AquaDepth Dive Center HQ",
-                      animation: google.maps.Animation.DROP,
-                    });
-                  }}
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3748.34925453057!2d57.54324857616065!3d-20.035808741613913!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x217dacaed25f4d75%3A0x1814f7c7bab412c1!2sDive%20Dream%20Divers!5e0!3m2!1sen!2smu!4v1781795341840!5m2!1sen!2smu"
+                  className="absolute inset-0 w-full h-full"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Dive Dream Divers Location"
                 />
               </div>
             </div>

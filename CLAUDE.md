@@ -45,7 +45,7 @@ Uses **Wouter** (not React Router). All routes are flat and defined in `client/s
 
 ### Data
 
-All content lives in `client/src/const.ts` as typed arrays (`DIVE_SITES`, `COURSES`, `DIVE_PACKAGES`, `PROMOTIONS`, `IMAGES`, etc.). Updating content means editing this file directly. `IMAGES` holds Cloudfront CDN URLs — do not add images to `client/public/` or `client/src/assets/` (causes deployment issues); use `/manus-storage/` proxy paths for uploaded assets.
+All content lives in `client/src/const.ts` as typed arrays (`DIVE_SITES`, `COURSES`, `DIVE_PACKAGES`, `PROMOTIONS`, `IMAGES`, etc.). Updating content means editing this file directly. `IMAGES` holds image URLs (CDN, Unsplash, or local). Local images go in `client/public/images/` and are referenced as `/images/filename.webp` in `const.ts`. Optimize images before adding (use `.webp`, max 1920px wide, ~80% quality).
 
 ### Design system
 

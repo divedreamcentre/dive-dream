@@ -4,8 +4,7 @@ import { DIVE_PACKAGES, COURSES, SERVICES } from '@/const';
 import { Shield, CheckCircle2, AlertTriangle, Calendar, Users, CheckCircle, Mail, HelpCircle } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { toast } from 'sonner';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
 
 type ServiceCategory = '' | 'packages' | 'courses' | 'services';
 
@@ -76,19 +75,19 @@ export default function Reservations() {
     try {
       const ref = 'DD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
 
-      await addDoc(collection(db, 'reservations'), {
-        bookingRef: ref,
-        fullName,
+      const { error } = await supabase.from('reservations').insert({
+        booking_ref: ref,
+        full_name: fullName,
         email,
-        phone,
-        preferredDate,
-        peopleCount,
-        serviceCategory: serviceCategory || null,
-        selectedOption: selectedOption || null,
-        selectionLabel: getSelectionLabel() || null,
-        specialRequests: specialRequests || null,
-        createdAt: serverTimestamp(),
+        phone: phone || null,
+        preferred_date: preferredDate,
+        people_count: peopleCount,
+        service_category: serviceCategory || null,
+        selected_option: selectedOption || null,
+        selection_label: getSelectionLabel() || null,
+        special_requests: specialRequests || null,
       });
+      if (error) throw error;
 
       setBookingRef(ref);
       setIsExpanded(true);
@@ -97,7 +96,7 @@ export default function Reservations() {
         description: `A secure confirmation email has been dispatched to ${email}.`,
       });
     } catch (err) {
-      console.error('Firebase submission error:', err);
+      console.error('Submission error:', err);
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);

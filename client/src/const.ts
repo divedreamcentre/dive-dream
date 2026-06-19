@@ -97,6 +97,17 @@ export const IMAGES = {
   diveCenterReception: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80"
 };
 
+export const GALLERY_IMAGES = [
+  "/images/_16A1117a.webp",
+  "/images/_16A1136.webp",
+  "/images/_16A1225.webp",
+  "/images/_16A5023A-DeNoiseAI-severe-noise copy.webp",
+  "/images/_16A5285a-DeNoiseAI-severe-noise copy 2.webp",
+  "/images/_16A5337a-DeNoiseAI-severe-noise.webp",
+  "/images/_16A8879.webp",
+  "/images/_MG_9712-DeNoiseAI-severe-noise.webp",
+];
+
 // Dive Dream operates 40+ dive sites across Mauritius
 export const DIVE_SITES: DiveSite[] = [
   {
