@@ -41,9 +41,40 @@ export default function DiveSites() {
         </div>
       </section>
 
-      {/* Filter and Content Section */}
+      {/* Full Dive Sites Map */}
+      <section className="py-16 border-b border-border/40">
+        <div className="container">
+          <div className="text-center mb-10">
+            <span className="text-xs font-bold uppercase tracking-widest text-primary">Complete Map</span>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mt-2 mb-3">All 47 Dive Sites</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              From shallow coral gardens to deep wrecks and dramatic walls — explore the full range of dive sites across Northern Mauritius, Flic en Flac, Round Island, and the South Safari route.
+            </p>
+          </div>
+          <div className="glass-panel p-2 md:p-4 overflow-hidden group cursor-pointer">
+            <div className="relative rounded-lg overflow-hidden">
+              <img
+                src="/images/dive-sites-map.webp"
+                alt="Dive Dream Divers — Map of all 47 dive sites across Mauritius"
+                className="w-full h-auto object-contain rounded-lg transition-transform duration-700 group-hover:scale-[1.02]"
+              />
+              <div className="absolute inset-0 rounded-lg ring-1 ring-white/10 pointer-events-none" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Dive Site Highlights */}
       <section className="py-16">
         <div className="container">
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-widest text-primary">Handpicked</span>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mt-2 mb-3">Featured Dive Sites</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Our top picks for unforgettable underwater experiences. Filter by certification or environment to find your perfect dive.
+            </p>
+          </div>
+
           {/* Interactive Filters */}
           <div className="glass-panel p-6 mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             {/* Cert Filter */}

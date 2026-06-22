@@ -16,8 +16,35 @@ const heroSlides = [
   { image: IMAGES.diveBoat, title: 'Luxury Dive Vessel', subtitle: 'Set sail on our custom-built catamaran for every expedition' },
 ];
 
+const HERO_BG_IMAGES = [
+  '/images/1.webp',
+  '/images/2.webp',
+  '/images/3.webp',
+  '/images/4.webp',
+  '/images/5.webp',
+];
+
 export default function Home() {
   const featuredSites = DIVE_SITES.slice(0, 3);
+
+  const [heroBgIndex, setHeroBgIndex] = useState(0);
+
+  useEffect(() => {
+    HERO_BG_IMAGES.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
+  useEffect(() => {
+    const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mql.matches) return;
+
+    const id = setInterval(() => {
+      setHeroBgIndex((prev) => (prev + 1) % HERO_BG_IMAGES.length);
+    }, 5000);
+    return () => clearInterval(id);
+  }, []);
 
   const autoplayPlugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: false }));
   const [emblaRef, emblaApi] = useEmblaCarousel(
@@ -170,14 +197,22 @@ export default function Home() {
     <Layout>
       {/* 1. HERO SECTION - Cinematic Immersive Depth */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Fullscreen Background Image with Deep Sea Overlay */}
+        {/* Fullscreen Background Slideshow with Deep Sea Overlay */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src={IMAGES.heroUnderwater} 
-            alt="Cinematic Underwater Scuba Diving" 
-            className="w-full h-full object-cover scale-105 animate-float"
-            style={{ animationDuration: '20s' }}
-          />
+          {HERO_BG_IMAGES.map((src, idx) => (
+            <img
+              key={src}
+              src={src}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover scale-105 animate-float"
+              style={{
+                animationDuration: '20s',
+                opacity: idx === heroBgIndex ? 1 : 0,
+                transition: 'opacity 1.2s ease-in-out',
+              }}
+            />
+          ))}
           {/* Deep oceanic gradient overlays for luxury feel & text contrast */}
           <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background z-10" />
           <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-background/30 z-10" />

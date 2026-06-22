@@ -86,7 +86,7 @@ export default function Reservations() {
         selected_option: selectedOption || null,
         selection_label: getSelectionLabel() || null,
         special_requests: specialRequests || null,
-      });
+      }).select();
       if (error) throw error;
 
       setBookingRef(ref);
