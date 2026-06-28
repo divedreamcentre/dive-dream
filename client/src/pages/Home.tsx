@@ -22,6 +22,7 @@ const HERO_BG_IMAGES = [
   '/images/3.webp',
   '/images/4.webp',
   '/images/5.webp',
+  '/images/6.jpeg',
 ];
 
 export default function Home() {

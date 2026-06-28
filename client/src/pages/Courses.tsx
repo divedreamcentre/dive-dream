@@ -1,6 +1,5 @@
-import React from 'react';
 import Layout from '@/components/Layout';
-import { Globe, BookOpen, Waves, Award, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Globe, BookOpen, Waves, Award, ArrowRight } from 'lucide-react';
 import { Link } from 'wouter';
 
 export default function Courses() {
@@ -11,16 +10,19 @@ export default function Courses() {
       id: 'open-water',
       name: 'Open Water Diver Course',
       description: 'The foundation of recreational diving. Learn essential skills and knowledge to dive safely to 40 meters.',
+      detailPath: '/courses/open-water',
     },
     {
       id: 'advanced-open-water',
       name: 'Advanced Open Water Diver Course',
       description: 'Build on your Open Water skills with advanced techniques and deeper diving capabilities up to 30 meters.',
+      detailPath: '/courses/advanced-open-water',
     },
     {
       id: 'rescue-diver',
       name: 'Rescue Diver Course',
       description: 'Develop rescue techniques and emergency response skills to assist other divers in distress.',
+      detailPath: '/courses/rescue-diver',
     },
     {
       id: 'dive-master',
@@ -49,6 +51,7 @@ export default function Courses() {
       id: 'deep-diver',
       name: 'Deep Diver Specialty',
       description: 'Extend your depth limits and learn advanced decompression and safety procedures.',
+      detailPath: '/courses/deep-diver',
     },
     {
       id: 'drift-diving',
@@ -59,6 +62,13 @@ export default function Courses() {
       id: 'nitrox',
       name: 'Enriched Air Specialty (Nitrox)',
       description: 'Learn to use enriched air mixes for extended bottom times and safer diving profiles.',
+      detailPath: '/courses/nitrox',
+    },
+    {
+      id: 'extended-range',
+      name: 'Extended Range Diver (XR)',
+      description: 'The gateway into technical diving. Train for planned decompression dives to depths of 45-65 metres.',
+      detailPath: '/courses/extended-range',
     },
   ];
 
@@ -109,11 +119,11 @@ export default function Courses() {
     { name: 'Nitrox (Enriched Air)', icon: '💨' },
   ];
 
-  const CourseCard = ({ course }: { course: typeof coreCourses[0] }) => (
+  const CourseCard = ({ course }: { course: { id: string; name: string; description: string; detailPath?: string } }) => (
     <div className="glass-panel p-6 hover:border-primary/40 transition-all duration-300">
       <h3 className="text-lg font-serif font-bold text-white mb-3">{course.name}</h3>
       <p className="text-sm text-muted-foreground leading-relaxed mb-4">{course.description}</p>
-      <Link href={`/reservations?course=${course.id}`} className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors text-sm font-semibold">
+      <Link href={course.detailPath ?? `/reservations?course=${course.id}`} className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors text-sm font-semibold">
         Learn More <ArrowRight className="w-4 h-4" />
       </Link>
     </div>

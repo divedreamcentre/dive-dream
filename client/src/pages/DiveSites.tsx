@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import { DIVE_SITES, DiveSite } from '@/const';
-import { MapPin, Waves, Thermometer, Compass, Calendar, Sun, ArrowRight, Eye } from 'lucide-react';
+import { MapPin, Waves, Thermometer, Compass, Calendar, Sun, ArrowRight, Eye, CheckCircle2 } from 'lucide-react';
 import { Link } from 'wouter';
 import { MapView } from '@/components/Map';
 
@@ -142,7 +142,11 @@ export default function DiveSites() {
                       <span className="text-xs text-primary font-bold uppercase tracking-widest flex items-center gap-1.5">
                         <MapPin className="w-4 h-4" /> {activeSite.location}
                       </span>
-                      <h2 className="text-3xl font-serif font-bold text-white mt-1">{activeSite.name}</h2>
+                      {activeSite.tagline ? (
+                        <h2 className="text-3xl font-serif font-bold text-white mt-1">{activeSite.tagline}</h2>
+                      ) : (
+                        <h2 className="text-3xl font-serif font-bold text-white mt-1">{activeSite.name}</h2>
+                      )}
                     </div>
                     <Link href={`/reservations?site=${activeSite.id}`} className="btn-premium-primary py-2.5 px-6 text-sm">
                       Book This Dive
@@ -152,6 +156,23 @@ export default function DiveSites() {
                   <p className="text-muted-foreground leading-relaxed mb-8 text-base">
                     {activeSite.description}
                   </p>
+
+                  {/* Site Highlights */}
+                  {activeSite.highlights && activeSite.highlights.length > 0 && (
+                    <div className="mb-8">
+                      <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">
+                        Why Dive {activeSite.name}?
+                      </h4>
+                      <ul className="space-y-2.5">
+                        {activeSite.highlights.map((highlight, idx) => (
+                          <li key={idx} className="flex items-start gap-3 text-muted-foreground text-sm">
+                            <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                            <span>{highlight}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                   {/* Telemetry Stats Grid */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-white/5 border border-white/10 p-6 rounded-xl mb-8">

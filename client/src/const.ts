@@ -3,12 +3,14 @@
 export interface DiveSite {
   id: string;
   name: string;
+  tagline?: string;
   description: string;
   location: string;
   maxDepth: string;
   certificationLevel: 'Beginner' | 'Intermediate' | 'Advanced' | 'Technical';
   type: ('Wreck' | 'Reef' | 'Deep' | 'Drift' | 'Wall' | 'Night')[];
   marineLife: string[];
+  highlights?: string[];
   visibility: string;
   waterTemp: string;
   bestSeason: string;
@@ -97,28 +99,28 @@ export const IMAGES = {
   diveCenterReception: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80"
 };
 
-export const GALLERY_IMAGES = [
-  "/images/_16A1117a.webp",
-  "/images/_16A1136.webp",
-  "/images/_16A1225.webp",
-  "/images/_16A5023A-DeNoiseAI-severe-noise copy.webp",
-  "/images/_16A5285a-DeNoiseAI-severe-noise copy 2.webp",
-  "/images/_16A5337a-DeNoiseAI-severe-noise.webp",
-  "/images/_16A8879.webp",
-  "/images/_MG_9712-DeNoiseAI-severe-noise.webp",
-];
+const galleryGlob = import.meta.glob('./assets/gallery/*.{webp,jpg,jpeg,png}', { eager: true, query: '?url', import: 'default' });
+export const GALLERY_IMAGES: string[] = Object.values(galleryGlob) as string[];
 
 // Dive Dream operates 40+ dive sites across Mauritius
 export const DIVE_SITES: DiveSite[] = [
   {
     id: 'coin-de-mire',
     name: 'Coin de Mire',
-    description: 'One of Mauritius\'s most spectacular dive sites, Coin de Mire offers dramatic underwater topography with stunning coral formations, abundant marine life, and excellent visibility. Perfect for experienced divers seeking adventure.',
+    tagline: 'Dive the Legendary Coin de Mire',
+    description: 'Located off the northern coast of Mauritius, the iconic Coin de Mire (also known as Gunner\'s Quoin) is one of the island\'s most renowned diving destinations. Its dramatic underwater topography, clear waters, and rich marine biodiversity make it a must-visit site for divers of all experience levels.',
     location: 'Northern Mauritius',
     maxDepth: '40m (130ft)',
     certificationLevel: 'Advanced',
     type: ['Deep', 'Wall', 'Drift'],
-    marineLife: ['Groupers', 'Snappers', 'Barracudas', 'Reef Sharks'],
+    marineLife: ['Groupers', 'Snappers', 'Barracudas', 'Reef Sharks', 'Large Pelagic Species'],
+    highlights: [
+      'Spectacular underwater cliffs and drop-offs',
+      'Excellent visibility, often exceeding 20 metres',
+      'Healthy coral formations and volcanic rock structures',
+      'Frequent encounters with large pelagic species',
+      'Multiple dive sites suitable for varying experience levels',
+    ],
     visibility: '25m - 40m',
     waterTemp: '24°C - 28°C (75°F - 82°F)',
     bestSeason: 'October to April',
@@ -128,12 +130,20 @@ export const DIVE_SITES: DiveSite[] = [
   {
     id: 'ile-plate',
     name: 'Ile Plate',
-    description: 'A pristine reef system in Northern Mauritius featuring vibrant coral gardens, abundant tropical fish species, and excellent conditions for both recreational and technical diving. Known for its biodiversity.',
+    tagline: 'Explore the Waters of Ile Plate',
+    description: 'Located north of Mauritius, Ile Plate is one of the most remote and rewarding diving destinations in the region. Surrounded by pristine reefs and crystal-clear waters, the island offers exceptional diving opportunities for those seeking adventure beyond the mainland.',
     location: 'Northern Mauritius',
     maxDepth: '35m (115ft)',
     certificationLevel: 'Intermediate',
     type: ['Reef', 'Deep'],
     marineLife: ['Clownfish', 'Parrotfish', 'Moray Eels', 'Trevally'],
+    highlights: [
+      'Remote and unspoiled dive sites',
+      'Excellent underwater visibility',
+      'Diverse coral reef ecosystems',
+      'Abundant marine life',
+      'Unique volcanic and reef formations',
+    ],
     visibility: '20m - 35m',
     waterTemp: '25°C - 27°C (77°F - 81°F)',
     bestSeason: 'Year-round (Best: May to September)',
@@ -143,16 +153,24 @@ export const DIVE_SITES: DiveSite[] = [
   {
     id: 'round-island',
     name: 'Round Island',
-    description: 'A scenic dive destination featuring pristine coral reefs, clear waters, and excellent marine biodiversity. Round Island is ideal for photographers and divers seeking a mix of shallow and deep exploration.',
-    location: 'Northern Mauritius',
+    tagline: 'Shark Diving at Round Island',
+    description: 'Located northeast of Mauritius, Round Island is one of the country\'s most exciting advanced dive destinations. Its remote location, strong currents, and deep waters attract larger pelagic species, making it a prime site for shark encounters.',
+    location: 'Northeast Mauritius',
     maxDepth: '30m (100ft)',
-    certificationLevel: 'Beginner',
-    type: ['Reef', 'Night'],
-    marineLife: ['Green Sea Turtles', 'Octopus', 'Nudibranchs', 'Lionfish'],
+    certificationLevel: 'Advanced',
+    type: ['Reef', 'Deep', 'Drift', 'Wall'],
+    marineLife: ['Grey Reef Sharks', 'Whitetip Reef Sharks', 'Silvertip Sharks', 'Hammerhead Sharks'],
+    highlights: [
+      'One of Mauritius\' top locations for pelagic marine life',
+      'Dramatic underwater walls and volcanic formations',
+      'Clear blue-water conditions',
+      'Remote and uncrowded dive sites',
+      'Excellent opportunities for advanced divers',
+    ],
     visibility: '20m - 30m',
     waterTemp: '26°C - 28°C (79°F - 82°F)',
     bestSeason: 'Year-round',
-    weatherConditions: 'Calm to moderate, suitable for all levels.',
+    weatherConditions: 'Strong currents, remote location. Recommended for advanced divers.',
     image: IMAGES.coralReef
   },
   {

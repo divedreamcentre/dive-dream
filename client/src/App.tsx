@@ -18,6 +18,12 @@ import Nitrox from "./pages/Nitrox";
 import FAQ from "./pages/FAQ";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import OpenWater from "./pages/courses/OpenWater";
+import AdvancedOpenWater from "./pages/courses/AdvancedOpenWater";
+import RescueDiver from "./pages/courses/RescueDiver";
+import ExtendedRange from "./pages/courses/ExtendedRange";
+import DeepDiver from "./pages/courses/DeepDiver";
+import EnrichedAirNitrox from "./pages/courses/EnrichedAirNitrox";
 
 function Router() {
   return (
@@ -36,6 +42,12 @@ function Router() {
       <Route path="/faq" component={FAQ} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
+      <Route path="/courses/open-water" component={OpenWater} />
+      <Route path="/courses/advanced-open-water" component={AdvancedOpenWater} />
+      <Route path="/courses/rescue-diver" component={RescueDiver} />
+      <Route path="/courses/extended-range" component={ExtendedRange} />
+      <Route path="/courses/deep-diver" component={DeepDiver} />
+      <Route path="/courses/nitrox" component={EnrichedAirNitrox} />
       <Route path="/404" component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
