@@ -45,7 +45,9 @@ Uses **Wouter** (not React Router). All routes are flat and defined in `client/s
 
 ### Data
 
-All content lives in `client/src/const.ts` as typed arrays (`DIVE_SITES`, `COURSES`, `DIVE_PACKAGES`, `PROMOTIONS`, `IMAGES`, etc.). Updating content means editing this file directly. `IMAGES` holds image URLs (CDN, Unsplash, or local). Local images go in `client/public/images/` and are referenced as `/images/filename.webp` in `const.ts`. Optimize images before adding (use `.webp`, max 1920px wide, ~80% quality).
+All content lives in `client/src/const.ts` as typed arrays (`DIVE_SITES`, `COURSES`, `DIVE_PACKAGES`, `PROMOTIONS`, etc.). Updating content means editing this file directly.
+
+**Images** are managed in `client/src/images.ts`, organized by page/section (e.g. `home.heroBackgrounds`, `equipment.rentalGear`, `diveCenter.reception`). To change any photo on the site, open `images.ts`, find the section, and swap the URL. Shared images that appear on multiple pages are in the `shared` object at the top -- changing one updates everywhere. Local images go in `client/public/images/` and are referenced as `/images/filename.webp`. Gallery images are auto-imported from `client/src/assets/gallery/` via Vite glob. Optimize images before adding (use `.webp`, max 1920px wide, ~80% quality).
 
 ### Design system
 
@@ -95,3 +97,42 @@ Use **React Hook Form + Zod** for forms. Toast notifications use **Sonner** (`im
 - No sycophantic openers or closing fluff.
 - No emojis or em-dashes.
 - Do not guess APIs, versions, flags, commit SHAs, or package names. Verify by reading code or docs before asserting.
+
+<!-- code-review-graph MCP tools -->
+## MCP Tools: code-review-graph
+
+**IMPORTANT: This project has a knowledge graph. ALWAYS use the
+code-review-graph MCP tools BEFORE using Grep/Glob/Read to explore
+the codebase.** The graph is faster, cheaper (fewer tokens), and gives
+you structural context (callers, dependents, test coverage) that file
+scanning cannot.
+
+### When to use graph tools FIRST
+
+- **Exploring code**: `semantic_search_nodes` or `query_graph` instead of Grep
+- **Understanding impact**: `get_impact_radius` instead of manually tracing imports
+- **Code review**: `detect_changes` + `get_review_context` instead of reading entire files
+- **Finding relationships**: `query_graph` with callers_of/callees_of/imports_of/tests_for
+- **Architecture questions**: `get_architecture_overview` + `list_communities`
+
+Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need.
+
+### Key Tools
+
+| Tool | Use when |
+| ------ | ---------- |
+| `detect_changes` | Reviewing code changes — gives risk-scored analysis |
+| `get_review_context` | Need source snippets for review — token-efficient |
+| `get_impact_radius` | Understanding blast radius of a change |
+| `get_affected_flows` | Finding which execution paths are impacted |
+| `query_graph` | Tracing callers, callees, imports, tests, dependencies |
+| `semantic_search_nodes` | Finding functions/classes by name or keyword |
+| `get_architecture_overview` | Understanding high-level codebase structure |
+| `refactor_tool` | Planning renames, finding dead code |
+
+### Workflow
+
+1. The graph auto-updates on file changes (via hooks).
+2. Use `detect_changes` for code review.
+3. Use `get_affected_flows` to understand impact.
+4. Use `query_graph` pattern="tests_for" to check coverage.

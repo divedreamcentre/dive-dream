@@ -114,3 +114,5 @@ client/public/__manus__/version.json
 
 # Spartan AI config (contains API keys)
 .spartan/ai.env
+# Added by code-review-graph
+.code-review-graph/

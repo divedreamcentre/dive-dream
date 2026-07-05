@@ -14,7 +14,7 @@ import Services from "./pages/Services";
 import Crew from "./pages/Crew";
 import Equipment from "./pages/Equipment";
 import DiveCenter from "./pages/DiveCenter";
-import Nitrox from "./pages/Nitrox";
+import Diving from "./pages/Diving";
 import FAQ from "./pages/FAQ";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -24,6 +24,7 @@ import RescueDiver from "./pages/courses/RescueDiver";
 import ExtendedRange from "./pages/courses/ExtendedRange";
 import DeepDiver from "./pages/courses/DeepDiver";
 import EnrichedAirNitrox from "./pages/courses/EnrichedAirNitrox";
+import WreckDiver from "./pages/courses/WreckDiver";
 
 function Router() {
   return (
@@ -38,7 +39,7 @@ function Router() {
       <Route path="/crew" component={Crew} />
       <Route path="/equipment" component={Equipment} />
       <Route path="/dive-center" component={DiveCenter} />
-      <Route path="/nitrox" component={Nitrox} />
+      <Route path="/diving" component={Diving} />
       <Route path="/faq" component={FAQ} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
@@ -48,6 +49,7 @@ function Router() {
       <Route path="/courses/extended-range" component={ExtendedRange} />
       <Route path="/courses/deep-diver" component={DeepDiver} />
       <Route path="/courses/nitrox" component={EnrichedAirNitrox} />
+      <Route path="/courses/wreck-diver" component={WreckDiver} />
       <Route path="/404" component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

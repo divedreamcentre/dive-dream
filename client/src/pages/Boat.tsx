@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@/components/Layout';
-import { IMAGES } from '@/const';
+import { boat } from '@/images';
 import { Anchor, Shield, CheckCircle2, Waves, Award, Compass, Users, MapPin } from 'lucide-react';
 import { Link } from 'wouter';
 
@@ -26,7 +26,7 @@ export default function Boat() {
             <div className="relative">
               <div className="aspect-video rounded-xl overflow-hidden border border-white/10 shadow-2xl">
                 <img 
-                  src={IMAGES.diveBoat} 
+                  src={boat.vessel}
                   alt="MV Ocean Explorer" 
                   className="w-full h-full object-cover"
                 />

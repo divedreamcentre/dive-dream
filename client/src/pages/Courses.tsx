@@ -36,6 +36,7 @@ export default function Courses() {
       id: 'wreck-diving',
       name: 'Wreck Diving Specialty',
       description: 'Learn specialized techniques for exploring shipwrecks and artificial structures safely.',
+      detailPath: '/courses/wreck-diver',
     },
     {
       id: 'underwater-photography',

@@ -1,15 +1,15 @@
 import React from 'react';
 import Layout from '@/components/Layout';
-import { IMAGES } from '@/const';
+import { diveCenter } from '@/images';
 import { MapPin, CheckCircle2, Waves, Award, Compass, Shield } from 'lucide-react';
 
 
 export default function DiveCenter() {
   const facilityAreas = [
-    { title: 'Elegant Reception', desc: 'A spacious, air-conditioned check-in area with comfortable lounge seating, complimentary organic refreshments, and retail display of premium dive accessories.', img: IMAGES.diveCenterReception },
-    { title: 'Interactive Classroom', desc: 'Equipped with ultra-high-definition smart screens, whiteboards, and comfortable seating to ensure a premium, focused learning environment for SDI/TDI theory.', img: IMAGES.diveCenterClass },
-    { title: 'Hot Showers & Lockers', desc: 'Secure digital key lockers to store your valuables safely, and private hot-water showers with complimentary organic, reef-safe shampoo and body wash.', img: IMAGES.coralReef },
-    { title: 'Nitrox Blending Station', desc: 'Our state-of-the-art continuous-flow membrane blending station, capable of custom mixing Enriched Air Nitrox up to 40% oxygen on-demand.', img: IMAGES.heroUnderwater }
+    { title: 'Elegant Reception', desc: 'A spacious, air-conditioned check-in area with comfortable lounge seating, complimentary organic refreshments, and retail display of premium dive accessories.', img: diveCenter.reception },
+    { title: 'Interactive Classroom', desc: 'Equipped with ultra-high-definition smart screens, whiteboards, and comfortable seating to ensure a premium, focused learning environment for SDI/TDI theory.', img: diveCenter.classroom },
+    { title: 'Hot Showers & Lockers', desc: 'Secure digital key lockers to store your valuables safely, and private hot-water showers with complimentary organic, reef-safe shampoo and body wash.', img: diveCenter.showersLockers },
+    { title: 'Nitrox Blending Station', desc: 'Our state-of-the-art continuous-flow membrane blending station, capable of custom mixing Enriched Air Nitrox up to 40% oxygen on-demand.', img: diveCenter.nitroxStation }
   ];
 
   return (

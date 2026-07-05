@@ -79,28 +79,9 @@ export interface FAQItem {
   category: string;
 }
 
-// ASSET URL CONSTANTS (Generated via high-quality AI)
-export const IMAGES = {
-  heroUnderwater: "https://d2xsxph8kpxj0f.cloudfront.net/310519663733648542/Aznto3QGygoTJ6FEJVsnJY/hero-underwater-TdUHKQ4U3Ev9xUQ3CDVhpJ.webp",
-  diveSiteWreck: "https://d2xsxph8kpxj0f.cloudfront.net/310519663733648542/Aznto3QGygoTJ6FEJVsnJY/dive-site-wreck-3MmgzhoQkDytwfdvsYoTso.webp",
-  diveBoat: "https://d2xsxph8kpxj0f.cloudfront.net/310519663733648542/Aznto3QGygoTJ6FEJVsnJY/dive-boat-Nq3qNVj5ZE2g5tsFeu9nvJ.webp",
-  scubaTraining: "https://d2xsxph8kpxj0f.cloudfront.net/310519663733648542/Aznto3QGygoTJ6FEJVsnJY/scuba-training-PSQrqcSuAnqLbc4WsFz74z.webp",
-  coralReef: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80",
-  seaTurtle: "https://images.unsplash.com/photo-1551244072-5d12893278ab?auto=format&fit=crop&w=800&q=80",
-  mantaRay: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
-  whaleShark: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
-  instructor1: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
-  instructor2: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80",
-  instructor3: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80",
-  gearRegulator: "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?auto=format&fit=crop&w=600&q=80",
-  gearWetsuit: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=600&q=80",
-  gearComputer: "https://images.unsplash.com/photo-1583244532610-2a234e7c3eca?auto=format&fit=crop&w=600&q=80",
-  diveCenterClass: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
-  diveCenterReception: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80"
-};
-
-const galleryGlob = import.meta.glob('./assets/gallery/*.{webp,jpg,jpeg,png}', { eager: true, query: '?url', import: 'default' });
-export const GALLERY_IMAGES: string[] = Object.values(galleryGlob) as string[];
+// Images are managed in images.ts — organized by page/section for easy swapping.
+import { diveSites, services, crew, gallery } from './images';
+export { gallery as GALLERY_IMAGES } from './images';
 
 // Dive Dream operates 40+ dive sites across Mauritius
 export const DIVE_SITES: DiveSite[] = [
@@ -125,7 +106,7 @@ export const DIVE_SITES: DiveSite[] = [
     waterTemp: '24°C - 28°C (75°F - 82°F)',
     bestSeason: 'October to April',
     weatherConditions: 'Moderate to strong currents, suitable for advanced divers.',
-    image: IMAGES.heroUnderwater
+    image: diveSites.coinDeMire
   },
   {
     id: 'ile-plate',
@@ -148,7 +129,7 @@ export const DIVE_SITES: DiveSite[] = [
     waterTemp: '25°C - 27°C (77°F - 81°F)',
     bestSeason: 'Year-round (Best: May to September)',
     weatherConditions: 'Generally calm with light to moderate currents.',
-    image: IMAGES.diveSiteWreck
+    image: diveSites.ilePlate
   },
   {
     id: 'round-island',
@@ -171,7 +152,7 @@ export const DIVE_SITES: DiveSite[] = [
     waterTemp: '26°C - 28°C (79°F - 82°F)',
     bestSeason: 'Year-round',
     weatherConditions: 'Strong currents, remote location. Recommended for advanced divers.',
-    image: IMAGES.coralReef
+    image: diveSites.roundIsland
   },
   {
     id: 'passe-st-jacques',
@@ -186,7 +167,7 @@ export const DIVE_SITES: DiveSite[] = [
     waterTemp: '23°C - 26°C (73°F - 79°F)',
     bestSeason: 'May to September',
     weatherConditions: 'Strong currents, requires advanced skills and experience.',
-    image: IMAGES.scubaTraining
+    image: diveSites.passeStJacques
   }
 ];
 
@@ -351,35 +332,35 @@ export const SERVICES: Service[] = [
     title: 'Airport & Hotel Transfers',
     description: 'Enjoy seamless, air-conditioned private transfers from Mauritius International Airport directly to our dive center or your hotel. Comfortable transport for you and all your dive equipment.',
     price: '$40 per way',
-    image: IMAGES.diveBoat
+    image: services.airportTransfer
   },
   {
     id: 'private-charter',
     title: 'Private Boat Charters',
     description: 'Charter our dedicated dive boat for fully customized private expeditions. Perfect for groups, families, or professional underwater photography and videography projects.',
     price: 'From $800 / Day',
-    image: IMAGES.diveBoat
+    image: services.privateCharter
   },
   {
     id: 'snorkeling-trips',
     title: 'Guided Snorkeling Safaris',
     description: 'Not a certified diver? Join our experienced guides on a guided snorkeling adventure to pristine shallow reefs. All premium snorkeling gear and refreshments included.',
     price: '$35 per person',
-    image: IMAGES.coralReef
+    image: services.snorkeling
   },
   {
     id: 'underwater-photography',
     title: 'Underwater Photography Services',
     description: 'Capture your underwater memories with professional underwater photography. Our certified photographer will accompany you and provide high-resolution edited digital images.',
     price: '$85 per session',
-    image: IMAGES.heroUnderwater
+    image: services.photography
   },
   {
     id: 'refreshments',
     title: 'Onboard Catering & Refreshments',
     description: 'All boat trips include fresh tropical fruits, snacks, and mineral water. Upgrade to our premium lunch package with hot meals prepared fresh on board.',
     price: 'Included (Lunch upgrade $12)',
-    image: IMAGES.diveBoat
+    image: services.refreshments
   }
 ];
 
@@ -394,7 +375,7 @@ export const CREW: CrewMember[] = [
     languages: ['English', 'French', 'German'],
     specializations: ['Technical Diving', 'Wreck Diving', 'Deep Diving', 'Nitrox Blending', 'Underwater Photography', 'Rescue Training', 'Beginner Training', 'Youth Scuba Programs'],
     biography: 'Neysen is the founder and director of Dive Dream Diving Centre Ltd. A Master Scuba Dive Trainer with 22 years of diving experience and over 13,000 dives logged, Neysen trained in Germany according to European standards. He has trained over 3,500 diving courses and is recognized by SDI, TDI, and CMAS for his professionalism and expertise. Known for his patient teaching style and passion for introducing beginners to the underwater world, Neysen previously worked as Dive Centre Manager and Instructor at Heritage Resort and Le Telfair Resort.',
-    image: IMAGES.instructor1
+    image: crew.neysenPillay
   },
   {
     id: 'dive-master',
@@ -405,7 +386,7 @@ export const CREW: CrewMember[] = [
     languages: ['English', 'French', 'German'],
     specializations: ['Site Navigation', 'Marine Life Identification', 'Safety Management', 'Group Diving'],
     biography: 'Our team of certified dive masters brings extensive experience and local knowledge of Mauritius dive sites. They are fluent in English, French, and German, ensuring excellent communication with divers from around the world.',
-    image: IMAGES.instructor3
+    image: crew.diveMasters
   }
 ];
 

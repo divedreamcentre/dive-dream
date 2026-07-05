@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Phone, Mail, Menu, X, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
+import { branding } from '@/images';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -51,7 +52,7 @@ export default function Layout({ children }: LayoutProps) {
     { href: '/crew', label: 'Our Crew' },
     { href: '/equipment', label: 'Equipment' },
     { href: '/dive-center', label: 'Dive Center' },
-    { href: '/nitrox', label: 'Nitrox' },
+    { href: '/diving', label: 'Diving' },
     { href: '/faq', label: 'FAQs' },
   ];
 
@@ -91,7 +92,7 @@ export default function Layout({ children }: LayoutProps) {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="w-10 h-10 rounded-full overflow-hidden border border-primary/30 group-hover:border-primary/50 transition-all duration-300">
-              <img src="/images/dreamdivelogo.jpg" alt="Dive Dream Logo" className="w-full h-full object-cover" />
+              <img src={branding.logo} alt="Dive Dream Logo" className="w-full h-full object-cover" />
             </div>
             <div>
               <span className="font-serif text-xl md:text-2xl font-bold tracking-wide text-white block leading-none">DIVE DREAM</span>
@@ -224,7 +225,7 @@ export default function Layout({ children }: LayoutProps) {
             <div className="flex flex-col space-y-6">
               <Link href="/" className="flex items-center gap-2.5 group">
                 <div className="w-10 h-10 rounded-full overflow-hidden border border-primary/30">
-                  <img src="/images/dreamdivelogo.jpg" alt="Dive Dream Logo" className="w-full h-full object-cover" />
+                  <img src={branding.logo} alt="Dive Dream Logo" className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <span className="font-serif text-xl font-bold tracking-wide text-white block leading-none">DIVE DREAM</span>
@@ -260,7 +261,7 @@ export default function Layout({ children }: LayoutProps) {
                 <li><Link href="/about" className="hover:text-white transition-colors flex items-center gap-1"><ChevronRight className="w-3.5 h-3.5 text-primary" /> About Us</Link></li>
                 <li><Link href="/crew" className="hover:text-white transition-colors flex items-center gap-1"><ChevronRight className="w-3.5 h-3.5 text-primary" /> Our Crew</Link></li>
                 <li><Link href="/equipment" className="hover:text-white transition-colors flex items-center gap-1"><ChevronRight className="w-3.5 h-3.5 text-primary" /> Equipment & Safety</Link></li>
-                <li><Link href="/nitrox" className="hover:text-white transition-colors flex items-center gap-1"><ChevronRight className="w-3.5 h-3.5 text-primary" /> Nitrox Station</Link></li>
+                <li><Link href="/diving" className="hover:text-white transition-colors flex items-center gap-1"><ChevronRight className="w-3.5 h-3.5 text-primary" /> Diving</Link></li>
                 <li><Link href="/dive-center" className="hover:text-white transition-colors flex items-center gap-1"><ChevronRight className="w-3.5 h-3.5 text-primary" /> Dive Center</Link></li>
                 <li><Link href="/faq" className="hover:text-white transition-colors flex items-center gap-1"><ChevronRight className="w-3.5 h-3.5 text-primary" /> FAQs</Link></li>
                 <li><Link href="/contact" className="hover:text-white transition-colors flex items-center gap-1"><ChevronRight className="w-3.5 h-3.5 text-primary" /> Contact</Link></li>

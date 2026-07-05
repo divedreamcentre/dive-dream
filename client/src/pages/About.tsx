@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@/components/Layout';
-import { IMAGES } from '@/const';
+import { about } from '@/images';
 import { Shield, CheckCircle2, Award, Heart, Compass, Globe } from 'lucide-react';
 import { Link } from 'wouter';
 
@@ -53,7 +53,7 @@ export default function About() {
             <div className="relative">
               <div className="aspect-video rounded-xl overflow-hidden border border-white/10 shadow-2xl">
                 <img 
-                  src={IMAGES.scubaTraining} 
+                  src={about.mission}
                   alt="Scuba Training Session" 
                   className="w-full h-full object-cover"
                 />
@@ -66,7 +66,7 @@ export default function About() {
             <div className="relative lg:order-last">
               <div className="aspect-video rounded-xl overflow-hidden border border-white/10 shadow-2xl">
                 <img 
-                  src={IMAGES.coralReef} 
+                  src={about.conservation}
                   alt="Coral Reef Restoration" 
                   className="w-full h-full object-cover"
                 />

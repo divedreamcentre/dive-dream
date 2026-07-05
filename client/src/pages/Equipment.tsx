@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '@/components/Layout';
-import { IMAGES } from '@/const';
+import { equipment } from '@/images';
 import { Shield, CheckCircle2, Anchor, AlertCircle } from 'lucide-react';
 
 export default function Equipment() {
@@ -61,7 +61,7 @@ export default function Equipment() {
             <div className="relative">
               <div className="aspect-video rounded-xl overflow-hidden border border-white/10 shadow-2xl">
                 <img
-                  src={IMAGES.scubaTraining}
+                  src={equipment.safetyStandards}
                   alt="Safety Standards"
                   className="w-full h-full object-cover"
                 />
@@ -78,7 +78,7 @@ export default function Equipment() {
             <div className="relative lg:order-last">
               <div className="aspect-video rounded-xl overflow-hidden border border-white/10 shadow-2xl">
                 <img
-                  src={IMAGES.gearRegulator}
+                  src={equipment.rentalGear}
                   alt="Dive Equipment"
                   className="w-full h-full object-cover"
                 />
@@ -125,7 +125,7 @@ export default function Equipment() {
             <div className="relative">
               <div className="aspect-video rounded-xl overflow-hidden border border-white/10 shadow-2xl">
                 <img
-                  src={IMAGES.diveBoat}
+                  src={equipment.fleet}
                   alt="Dive Boats"
                   className="w-full h-full object-cover"
                 />

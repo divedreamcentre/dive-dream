@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'wouter';
 import Layout from '@/components/Layout';
-import { IMAGES, GALLERY_IMAGES, DIVE_SITES, DIVE_PACKAGES, PROMOTIONS, SERVICES } from '@/const';
+import { GALLERY_IMAGES, DIVE_SITES, DIVE_PACKAGES, PROMOTIONS, SERVICES } from '@/const';
+import { home } from '@/images';
 import { ArrowRight, Anchor, Shield, Star, Award, Compass, MapPin, Waves, Flame, Clock, BookOpen, Tag, ChevronLeft, ChevronRight, Globe } from 'lucide-react';
 
 
@@ -9,20 +10,11 @@ import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 
 const heroSlides = [
-  { image: IMAGES.heroUnderwater, title: 'Explore Crystal Waters', subtitle: 'Dive into 40+ pristine sites across Mauritius' },
-  { image: IMAGES.diveSiteWreck, title: 'Historic Wreck Diving', subtitle: 'Discover fascinating underwater relics and marine ecosystems' },
-  { image: IMAGES.coralReef, title: 'Vibrant Coral Gardens', subtitle: 'Swim through some of the Indian Ocean\'s richest reefs' },
-  { image: IMAGES.scubaTraining, title: 'Professional Training', subtitle: 'SDI & TDI certified courses from beginner to instructor' },
-  { image: IMAGES.diveBoat, title: 'Luxury Dive Vessel', subtitle: 'Set sail on our custom-built catamaran for every expedition' },
-];
-
-const HERO_BG_IMAGES = [
-  '/images/1.webp',
-  '/images/2.webp',
-  '/images/3.webp',
-  '/images/4.webp',
-  '/images/5.webp',
-  '/images/6.jpeg',
+  { image: home.heroSlides[0], title: 'Explore Crystal Waters', subtitle: 'Dive into 40+ pristine sites across Mauritius' },
+  { image: home.heroSlides[1], title: 'Historic Wreck Diving', subtitle: 'Discover fascinating underwater relics and marine ecosystems' },
+  { image: home.heroSlides[2], title: 'Vibrant Coral Gardens', subtitle: 'Swim through some of the Indian Ocean\'s richest reefs' },
+  { image: home.heroSlides[3], title: 'Professional Training', subtitle: 'SDI & TDI certified courses from beginner to instructor' },
+  { image: home.heroSlides[4], title: 'Luxury Dive Vessel', subtitle: 'Set sail on our custom-built catamaran for every expedition' },
 ];
 
 export default function Home() {
@@ -31,7 +23,7 @@ export default function Home() {
   const [heroBgIndex, setHeroBgIndex] = useState(0);
 
   useEffect(() => {
-    HERO_BG_IMAGES.forEach((src) => {
+    home.heroBackgrounds.forEach((src) => {
       const img = new Image();
       img.src = src;
     });
@@ -42,7 +34,7 @@ export default function Home() {
     if (mql.matches) return;
 
     const id = setInterval(() => {
-      setHeroBgIndex((prev) => (prev + 1) % HERO_BG_IMAGES.length);
+      setHeroBgIndex((prev) => (prev + 1) % home.heroBackgrounds.length);
     }, 5000);
     return () => clearInterval(id);
   }, []);
@@ -55,12 +47,6 @@ export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [slideTweens, setSlideTweens] = useState<number[]>([]);
 
-  const marineAutoplay = useRef(Autoplay({ delay: 4000, stopOnInteraction: false }));
-  const [marineRef, marineApi] = useEmblaCarousel(
-    { loop: true, align: 'start', slidesToScroll: 1 },
-    [marineAutoplay.current],
-  );
-  const [marineActiveSlide, setMarineActiveSlide] = useState(0);
 
   const scrollTo = useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi]);
 
@@ -98,15 +84,6 @@ export default function Home() {
     };
   }, [emblaApi, updateTweens]);
 
-  const scrollToMarine = useCallback((index: number) => marineApi?.scrollTo(index), [marineApi]);
-
-  useEffect(() => {
-    if (!marineApi) return;
-    const onSelect = () => setMarineActiveSlide(marineApi.selectedScrollSnap());
-    marineApi.on('select', onSelect);
-    onSelect();
-    return () => { marineApi.off('select', onSelect); };
-  }, [marineApi]);
 
   const galleryAutoplay = useRef(Autoplay({ delay: 3500, stopOnInteraction: false }));
   const [galleryRef, galleryApi] = useEmblaCarousel(
@@ -152,13 +129,6 @@ export default function Home() {
     };
   }, [galleryApi, updateGalleryTweens]);
 
-  const marineLife = [
-    { name: 'Whale Shark', desc: 'The gentle giants of the deep, visiting outer reefs seasonally. These magnificent creatures can grow up to 12 metres and are a highlight of any dive.', img: IMAGES.heroUnderwater },
-    { name: 'Green Sea Turtle', desc: 'Frequently seen grazing in shallow coral gardens. These graceful reptiles are a beloved encounter for divers of all experience levels.', img: IMAGES.seaTurtle },
-    { name: 'Manta Ray', desc: 'Gracefully gliding along deep currents and cleaning stations. With wingspans up to 7 metres, mantas are among the ocean\'s most elegant inhabitants.', img: IMAGES.mantaRay },
-    { name: 'Giant Moray Eel', desc: 'Peeking out from rocky crevices and historic wrecks. Despite their fearsome appearance, these fascinating creatures are generally docile.', img: IMAGES.diveSiteWreck },
-  ];
-
   const coreCourses = [
     { id: 'open-water', name: 'Open Water Diver Course', description: 'The foundation of recreational diving. Learn essential skills to dive safely to 18 metres independently with a buddy.' },
     { id: 'advanced-open-water', name: 'Advanced Open Water Diver Course', description: 'Build on your Open Water skills with advanced techniques and deeper diving capabilities up to 30 metres.' },
@@ -200,7 +170,7 @@ export default function Home() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Fullscreen Background Slideshow with Deep Sea Overlay */}
         <div className="absolute inset-0 z-0">
-          {HERO_BG_IMAGES.map((src, idx) => (
+          {home.heroBackgrounds.map((src, idx) => (
             <img
               key={src}
               src={src}
@@ -679,79 +649,6 @@ export default function Home() {
               View All Services
               <ArrowRight className="w-4 h-4 text-primary" />
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. MARINE LIFE ENCOUNTERS SLIDESHOW */}
-      <section className="py-24 relative">
-        <div className="container text-center max-w-5xl">
-          <span className="text-xs font-bold uppercase tracking-widest text-primary">Biodiversity</span>
-          <h2 className="text-3xl md:text-5xl font-serif mt-2 mb-4 text-white">Marine Life Encounters</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto mb-16">
-            Our dive sites are teeming with majestic pelagics and fascinating macro species. Here are some of the regular residents you will meet.
-          </p>
-
-          <div className="relative">
-            <div
-              ref={marineRef}
-              className="overflow-hidden"
-              onMouseEnter={() => marineAutoplay.current.stop()}
-              onMouseLeave={() => marineAutoplay.current.play()}
-            >
-              <div className="flex -ml-6">
-                {marineLife.map((creature, idx) => (
-                  <div
-                    key={idx}
-                    className="min-w-0 shrink-0 grow-0 pl-6 basis-full sm:basis-1/2 lg:basis-1/3"
-                  >
-                    <div className="glass-panel overflow-hidden group flex flex-col h-full text-left">
-                      <div className="h-56 overflow-hidden relative">
-                        <img
-                          src={creature.img}
-                          alt={creature.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-                      </div>
-                      <div className="p-6 flex-grow flex flex-col justify-between">
-                        <div>
-                          <h3 className="text-lg font-serif font-bold text-white mb-2">{creature.name}</h3>
-                          <p className="text-sm text-muted-foreground leading-relaxed">{creature.desc}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Navigation Arrows */}
-            <button
-              onClick={() => marineApi?.scrollPrev()}
-              className="absolute left-0 sm:-left-5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-background/70 backdrop-blur-md border border-white/15 flex items-center justify-center text-white hover:bg-background/90 hover:border-primary/40 transition-all duration-200 z-10 shadow-lg"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => marineApi?.scrollNext()}
-              className="absolute right-0 sm:-right-5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-background/70 backdrop-blur-md border border-white/15 flex items-center justify-center text-white hover:bg-background/90 hover:border-primary/40 transition-all duration-200 z-10 shadow-lg"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-
-            {/* Pagination Dots */}
-            <div className="flex justify-center gap-2 mt-8">
-              {marineLife.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => scrollToMarine(idx)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    idx === marineActiveSlide ? 'w-8 bg-primary' : 'w-2 bg-white/30 hover:bg-white/50'
-                  }`}
-                />
-              ))}
-            </div>
           </div>
         </div>
       </section>

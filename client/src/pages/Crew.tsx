@@ -21,7 +21,7 @@ export default function Crew() {
       {/* Crew Profiles */}
       <section className="py-24">
         <div className="container max-w-5xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
             {CREW.map((member) => (
               <div key={member.id} className="glass-panel overflow-hidden group flex flex-col h-full justify-between">
                 <div>

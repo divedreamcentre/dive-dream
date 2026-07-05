@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import { DIVE_SITES, DiveSite } from '@/const';
+import { diveSites } from '@/images';
 import { MapPin, Waves, Thermometer, Compass, Calendar, Sun, ArrowRight, Eye, CheckCircle2 } from 'lucide-react';
 import { Link } from 'wouter';
-import { MapView } from '@/components/Map';
 
 export default function DiveSites() {
   const [selectedCert, setSelectedCert] = useState<string>('All');
@@ -54,7 +54,7 @@ export default function DiveSites() {
           <div className="glass-panel p-2 md:p-4 overflow-hidden group cursor-pointer">
             <div className="relative rounded-lg overflow-hidden">
               <img
-                src="/images/dive-sites-map.webp"
+                src={diveSites.map}
                 alt="Dive Dream Divers — Map of all 47 dive sites across Mauritius"
                 className="w-full h-auto object-contain rounded-lg transition-transform duration-700 group-hover:scale-[1.02]"
               />
@@ -229,23 +229,6 @@ export default function DiveSites() {
                 </div>
               </div>
 
-              {/* Mini Map for Selected Site */}
-              <div className="glass-panel overflow-hidden h-[300px]">
-                <MapView 
-                  onMapReady={(map: google.maps.Map) => {
-                    const center = { lat: -8.6500, lng: 115.2167 }; // Bali coordinates
-                    map.setCenter(center);
-                    map.setZoom(13);
-                    
-                    new google.maps.Marker({
-                      position: center,
-                      map: map,
-                      title: activeSite.name,
-                      animation: google.maps.Animation.DROP,
-                    });
-                  }}
-                />
-              </div>
             </div>
 
             {/* Right Column: Site Selection List */}
